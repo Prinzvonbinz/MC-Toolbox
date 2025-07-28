@@ -1,51 +1,582 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Minecraft Toolbox</title>
-  <link rel="stylesheet" href="style.css" />
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Minecraft Toolbox</title>
+<style>
+  /* Reset */
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    font-family: 'Courier New', monospace;
+    background: linear-gradient(135deg, #1a1a1a, #0d0d0d);
+    color: #eee;
+    margin: 0;
+    padding: 0;
+    user-select: none;
+  }
+  h1, h2 {
+    text-align: center;
+    margin: 0.5em 0;
+  }
+  #app {
+    max-width: 900px;
+    margin: 0 auto 3em auto;
+    padding: 1em;
+  }
+  nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1em;
+    gap: 10px;
+  }
+  nav button {
+    background-color: #2d7a2d;
+    border: 2px solid #4cd64c;
+    color: #d0f0d0;
+    padding: 0.5em 1em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+  }
+  nav button.active,
+  nav button:hover {
+    background-color: #4cd64c;
+    color: #0b330b;
+  }
+  section {
+    display: none;
+  }
+  section.active {
+    display: block;
+  }
+
+  /* Common Button Style */
+  button.btn {
+    background-color: #2d7a2d;
+    border: 2px solid #4cd64c;
+    color: #d0f0d0;
+    padding: 0.4em 0.9em;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 6px;
+    margin: 0.3em 0.3em 0.3em 0;
+    transition: background-color 0.3s;
+  }
+  button.btn:hover {
+    background-color: #4cd64c;
+    color: #0b330b;
+  }
+  input[type=number], input[type=text], textarea {
+    background-color: #222;
+    border: 2px solid #4cd64c;
+    color: #d0f0d0;
+    padding: 0.4em 0.6em;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 1em;
+    width: 100%;
+    max-width: 240px;
+    margin-bottom: 0.5em;
+  }
+  label {
+    display: block;
+    margin: 0.3em 0 0.1em 0;
+  }
+  /* Position Translator */
+  #position-translator input {
+    max-width: 80px;
+    margin-right: 0.5em;
+  }
+  #position-translator .row {
+    margin: 1em 0;
+  }
+  #pos-result {
+    margin-top: 0.5em;
+    font-weight: bold;
+    color: #aaffaa;
+  }
+
+  /* Quest Generator */
+  #quest-list {
+    list-style: none;
+    padding-left: 0;
+    max-height: 260px;
+    overflow-y: auto;
+    border: 2px solid #4cd64c;
+    border-radius: 6px;
+    margin-bottom: 1em;
+  }
+  #quest-list li {
+    background-color: #222;
+    margin: 0.2em 0;
+    padding: 0.5em;
+    border-radius: 4px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #quest-list li.done {
+    text-decoration: line-through;
+    color: #777;
+    background-color: #133913;
+  }
+  #quest-list li span.checkmark {
+    color: #4cd64c;
+    font-weight: bold;
+  }
+
+  /* Hardcore Tagebuch */
+  #diary-entries {
+    max-height: 250px;
+    overflow-y: auto;
+    border: 2px solid #4cd64c;
+    border-radius: 6px;
+    margin-bottom: 1em;
+    background-color: #111;
+  }
+  .entry {
+    padding: 0.5em;
+    border-bottom: 1px solid #4cd64c;
+  }
+  .entry:last-child {
+    border-bottom: none;
+  }
+  #new-entry-text {
+    width: 100%;
+    max-width: 500px;
+    height: 80px;
+  }
+
+  /* Bingo */
+  #bingo-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 8px;
+    max-width: 500px;
+    margin: 0 auto 1em auto;
+  }
+  .bingo-cell {
+    background-color: #222;
+    border: 2px solid #4cd64c;
+    border-radius: 8px;
+    padding: 0.7em;
+    font-size: 0.85rem;
+    line-height: 1.2;
+    cursor: pointer;
+    user-select: none;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  .bingo-cell.checked {
+    background-color: #4cd64c;
+    color: #0b330b;
+    font-weight: bold;
+  }
+  #bingo-status {
+    font-weight: bold;
+    color: #aaffaa;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #4cd64c;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #111;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    #bingo-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .bingo-cell {
+      height: 70px;
+      font-size: 0.75rem;
+      padding: 0.5em;
+    }
+  }
+</style>
 </head>
 <body>
-  <header>
+  <div id="app">
     <h1>Minecraft Toolbox</h1>
     <nav>
-      <button data-module="news" class="nav-btn active">News & Updates</button>
-      <button data-module="soundboard" class="nav-btn">Soundboard</button>
-      <button data-module="bauplan" class="nav-btn">Bauplan-Organizer</button>
-      <button data-module="serverfinder" class="nav-btn">Server-Finder</button>
+      <button class="tab-btn active" data-tab="position-translator">Positionstranslator</button>
+      <button class="tab-btn" data-tab="quest-generator">Quest-Generator</button>
+      <button class="tab-btn" data-tab="hardcore-diary">Hardcore-Tagebuch</button>
+      <button class="tab-btn" data-tab="bingo">Minecraft Bingo</button>
     </nav>
-  </header>
 
-  <main>
-    <section id="news" class="module active">
-      <h2>News & Updates</h2>
-      <div id="news-list">Lade News...</div>
+    <!-- Positionstranslator -->
+    <section id="position-translator" class="active">
+      <h2>Nether ↔ Overworld Koordinaten</h2>
+      <div>
+        <label>Nether X:</label>
+        <input type="number" id="nether-x" />
+        <label>Nether Z:</label>
+        <input type="number" id="nether-z" />
+        <button class="btn" onclick="translateNetherToOverworld()">→ Overworld</button>
+      </div>
+      <div style="margin-top:1em;">
+        <label>Overworld X:</label>
+        <input type="number" id="overworld-x" />
+        <label>Overworld Z:</label>
+        <input type="number" id="overworld-z" />
+        <button class="btn" onclick="translateOverworldToNether()">→ Nether</button>
+      </div>
+      <div id="pos-result"></div>
     </section>
 
-    <section id="soundboard" class="module">
-      <h2>Soundboard</h2>
-      <div id="soundboard-buttons"></div>
+    <!-- Quest-Generator -->
+    <section id="quest-generator">
+      <h2>Quest-Generator</h2>
+      <label for="quest-difficulty">Schwierigkeit wählen:</label>
+      <select id="quest-difficulty">
+        <option value="easy">Leicht</option>
+        <option value="medium" selected>Mittel</option>
+        <option value="hard">Schwer</option>
+      </select>
+      <button class="btn" onclick="generateQuest()">Neue Quest generieren</button>
+      <ul id="quest-list"></ul>
+      <button class="btn" onclick="clearCompletedQuests()">Erledigte löschen</button>
     </section>
 
-    <section id="bauplan" class="module">
-      <h2>Bauplan-Organizer</h2>
-      <form id="bauplan-form">
-        <input type="text" id="plan-title" placeholder="Titel" required />
-        <textarea id="plan-content" placeholder="Beschreibung, Materialien, etc." rows="6" required></textarea>
-        <button type="submit">Speichern</button>
-      </form>
-      <h3>Gespeicherte Baupläne</h3>
-      <ul id="plan-list"></ul>
+    <!-- Hardcore Tagebuch -->
+    <section id="hardcore-diary">
+      <h2>Hardcore-Tagebuch</h2>
+      <textarea id="new-entry-text" placeholder="Notiz hinzufügen..."></textarea><br/>
+      <button class="btn" onclick="addDiaryEntry()">Notiz speichern</button>
+      <button class="btn" onclick="clearDiary()">Alle Notizen löschen</button>
+      <div id="diary-entries"></div>
     </section>
 
-    <section id="serverfinder" class="module">
-      <h2>Multiplayer Server-Finder</h2>
-      <input type="text" id="server-search" placeholder="Server suchen..." />
-      <ul id="server-list"></ul>
+    <!-- Bingo -->
+    <section id="bingo">
+      <h2>Minecraft Bingo</h2>
+      <div id="bingo-status">Klicke auf die Aufgaben, um sie abzuhaken.</div>
+      <div id="bingo-grid"></div>
+      <button class="btn" onclick="newBingoCard()">Neue Bingo-Karte</button>
     </section>
-  </main>
+  </div>
 
-  <script src="main.js"></script>
+<script>
+  // --- TAB NAVIGATION ---
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = document.querySelectorAll('section');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.tab).classList.add('active');
+    });
+  });
+
+  // --- Positionstranslator ---
+  function translateNetherToOverworld() {
+    const nx = parseFloat(document.getElementById('nether-x').value);
+    const nz = parseFloat(document.getElementById('nether-z').value);
+    if (isNaN(nx) || isNaN(nz)) {
+      showPosResult('Bitte gültige Nether-Koordinaten eingeben!');
+      return;
+    }
+    const ox = (nx * 8).toFixed(1);
+    const oz = (nz * 8).toFixed(1);
+    showPosResult(`Overworld Koordinaten: X=${ox}  Z=${oz}`);
+  }
+  function translateOverworldToNether() {
+    const ox = parseFloat(document.getElementById('overworld-x').value);
+    const oz = parseFloat(document.getElementById('overworld-z').value);
+    if (isNaN(ox) || isNaN(oz)) {
+      showPosResult('Bitte gültige Overworld-Koordinaten eingeben!');
+      return;
+    }
+    const nx = (ox / 8).toFixed(1);
+    const nz = (oz / 8).toFixed(1);
+    showPosResult(`Nether Koordinaten: X=${nx}  Z=${nz}`);
+  }
+  function showPosResult(msg) {
+    const el = document.getElementById('pos-result');
+    el.textContent = msg;
+  }
+
+  // --- Quest-Generator ---
+  const quests = {
+    easy: [
+      'Sammle 10 Holzblöcke',
+      'Baue ein kleines Haus',
+      'Sammle 20 Steinblöcke',
+      'Fange 5 Fische',
+      'Sammle 5 Äpfel',
+      'Erkunde eine Höhle',
+      'Töte 3 Zombies',
+      'Pflanze 5 Samen',
+      'Sammle 10 Kohle',
+      'Sammle 5 Pilze'
+    ],
+    medium: [
+      'Sammle 20 Diamanten',
+      'Baue eine Farm',
+      'Besiege 10 Skelette',
+      'Finde einen Tempel',
+      'Erreiche Level 15',
+      'Besiege den Wither',
+      'Sammle 10 Eisenbarren',
+      'Erkunde den Nether',
+      'Baue eine Brücke über Wasser',
+      'Sammle 15 Goldbarren'
+    ],
+    hard: [
+      'Besiege den Enderdrachen',
+      'Sammle 64 Obsidian',
+      'Erreiche Level 30',
+      'Baue eine automatische Farm',
+      'Sammle 20 Netherquarz',
+      'Erkunde eine Bastion',
+      'Besiege 50 Mobs',
+      'Finde eine Festung',
+      'Baue eine Redstone-Tür',
+      'Erreiche das Ende'
+    ]
+  };
+
+  let questList = [];
+  function generateQuest() {
+    const difficulty = document.getElementById('quest-difficulty').value;
+    const available = quests[difficulty];
+    if (!available || available.length === 0) return;
+
+    // Wähle zufällige Quest, die noch nicht erledigt ist
+    const remaining = available.filter(q => !questList.some(e => e.text === q));
+    if (remaining.length === 0) {
+      alert('Alle Quests dieser Schwierigkeit sind bereits in der Liste.');
+      return;
+    }
+    const questText = remaining[Math.floor(Math.random() * remaining.length)];
+    questList.push({text: questText, done: false});
+    saveQuests();
+    renderQuests();
+  }
+
+  function renderQuests() {
+    const ul = document.getElementById('quest-list');
+    ul.innerHTML = '';
+    questList.forEach((q, i) => {
+      const li = document.createElement('li');
+      li.textContent = q.text;
+      li.className = q.done ? 'done' : '';
+      li.onclick = () => {
+        questList[i].done = !questList[i].done;
+        saveQuests();
+        renderQuests();
+      };
+      if (q.done) {
+        const span = document.createElement('span');
+        span.className = 'checkmark';
+        span.textContent = ' ✔';
+        li.appendChild(span);
+      }
+      ul.appendChild(li);
+    });
+  }
+
+  function clearCompletedQuests() {
+    questList = questList.filter(q => !q.done);
+    saveQuests();
+    renderQuests();
+  }
+
+  function saveQuests() {
+    localStorage.setItem('mc_quests', JSON.stringify(questList));
+  }
+
+  function loadQuests() {
+    const data = localStorage.getItem('mc_quests');
+    if (data) {
+      questList = JSON.parse(data);
+    }
+  }
+  loadQuests();
+  renderQuests();
+
+  // --- Hardcore Tagebuch ---
+  let diaryEntries = [];
+  function addDiaryEntry() {
+    const text = document.getElementById('new-entry-text').value.trim();
+    if (text.length === 0) {
+      alert('Bitte schreibe eine Notiz.');
+      return;
+    }
+    const timestamp = new Date().toLocaleString();
+    diaryEntries.push({text, timestamp});
+    saveDiary();
+    renderDiary();
+    document.getElementById('new-entry-text').value = '';
+  }
+  function renderDiary() {
+    const container = document.getElementById('diary-entries');
+    container.innerHTML = '';
+    diaryEntries.slice().reverse().forEach(entry => {
+      const div = document.createElement('div');
+      div.className = 'entry';
+      div.textContent = `[${entry.timestamp}] ${entry.text}`;
+      container.appendChild(div);
+    });
+  }
+  function saveDiary() {
+    localStorage.setItem('mc_diary', JSON.stringify(diaryEntries));
+  }
+  function loadDiary() {
+    const data = localStorage.getItem('mc_diary');
+    if (data) {
+      diaryEntries = JSON.parse(data);
+    }
+  }
+  function clearDiary() {
+    if (confirm('Alle Notizen löschen?')) {
+      diaryEntries = [];
+      saveDiary();
+      renderDiary();
+    }
+  }
+  loadDiary();
+  renderDiary();
+
+  // --- Minecraft Bingo ---
+  const bingoTasks = [
+    'Sammle 10 Holzblöcke',
+    'Erreiche Level 5',
+    'Töte 3 Zombies',
+    'Baue ein Haus',
+    'Sammle 20 Steinblöcke',
+    'Finde ein Dorf',
+    'Sammle 5 Äpfel',
+    'Erkunde eine Höhle',
+    'Fange 5 Fische',
+    'Besiege einen Skelett',
+    'Sammle 15 Kohle',
+    'Baue eine Brücke',
+    'Erreiche Level 10',
+    'Sammle 10 Diamanten',
+    'Besiege den Enderdrachen',
+    'Baue eine Farm',
+    'Sammle 10 Eisenbarren',
+    'Erkunde den Nether',
+    'Töte 5 Creeper',
+    'Sammle 5 Goldbarren',
+    'Baue ein Boot',
+    'Sammle 20 Sand',
+    'Besiege einen Wither',
+    'Erreiche Level 15',
+    'Sammle 20 Lapis Lazuli'
+  ];
+
+  let bingoCard = [];
+  function newBingoCard() {
+    bingoCard = [];
+    const copy = [...bingoTasks];
+    for (let i=0; i<25; i++) {
+      if (copy.length === 0) break;
+      const index = Math.floor(Math.random() * copy.length);
+      bingoCard.push({text: copy.splice(index,1)[0], checked: false});
+    }
+    saveBingo();
+    renderBingo();
+    setBingoStatus('');
+  }
+
+  function renderBingo() {
+    const grid = document.getElementById('bingo-grid');
+    grid.innerHTML = '';
+    bingoCard.forEach((cell, i) => {
+      const div = document.createElement('div');
+      div.className = 'bingo-cell' + (cell.checked ? ' checked' : '');
+      div.textContent = cell.text;
+      div.onclick = () => {
+        bingoCard[i].checked = !bingoCard[i].checked;
+        saveBingo();
+        renderBingo();
+        checkBingo();
+      };
+      grid.appendChild(div);
+    });
+  }
+
+  function saveBingo() {
+    localStorage.setItem('mc_bingo', JSON.stringify(bingoCard));
+  }
+  function loadBingo() {
+    const data = localStorage.getItem('mc_bingo');
+    if (data) {
+      bingoCard = JSON.parse(data);
+    } else {
+      newBingoCard();
+      }
+  renderBingo();
+
+  function checkBingo() {
+    const size = 5;
+    let won = false;
+
+    // Zeilen prüfen
+    for (let r = 0; r < size; r++) {
+      let rowComplete = true;
+      for (let c = 0; c < size; c++) {
+        if (!bingoCard[r * size + c].checked) {
+          rowComplete = false;
+          break;
+        }
+      }
+      if (rowComplete) won = true;
+    }
+
+    // Spalten prüfen
+    for (let c = 0; c < size; c++) {
+      let colComplete = true;
+      for (let r = 0; r < size; r++) {
+        if (!bingoCard[r * size + c].checked) {
+          colComplete = false;
+          break;
+        }
+      }
+      if (colComplete) won = true;
+    }
+
+    // Diagonalen prüfen
+    let diag1Complete = true;
+    let diag2Complete = true;
+    for (let i = 0; i < size; i++) {
+      if (!bingoCard[i * size + i].checked) diag1Complete = false;
+      if (!bingoCard[i * size + (size - 1 - i)].checked) diag2Complete = false;
+    }
+    if (diag1Complete || diag2Complete) won = true;
+
+    const status = document.getElementById('bingo-status');
+    if (won) {
+      status.textContent = 'BINGO! 🎉 Du hast gewonnen!';
+      status.style.color = '#4cd64c';
+    } else {
+      status.textContent = 'Klicke auf die Aufgaben, um sie abzuhaken.';
+      status.style.color = '#aaffaa';
+    }
+  }
+  checkBingo();
+</script>
 </body>
 </html>

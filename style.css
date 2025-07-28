@@ -1,0 +1,211 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #121212;
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background-color: #1e88e5;
+  color: white;
+  padding: 15px 10px;
+  text-align: center;
+}
+
+nav {
+  margin-top: 10px;
+}
+
+nav .nav-btn {
+  background-color: #1565c0;
+  border: none;
+  color: white;
+  padding: 8px 14px;
+  margin: 0 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+nav .nav-btn.active,
+nav .nav-btn:hover {
+  background-color: #64b5f6;
+  color: #121212;
+}
+
+main {
+  flex: 1;
+  padding: 15px;
+  max-width: 900px;
+  margin: 0 auto 20px;
+  width: 100%;
+}
+
+.module {
+  display: none;
+}
+
+.module.active {
+  display: block;
+}
+
+/* News */
+#news-list {
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.news-item {
+  background-color: #222;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.news-item h3 {
+  margin: 0 0 5px 0;
+}
+
+.news-item a {
+  color: #64b5f6;
+  text-decoration: none;
+}
+
+.news-item a:hover {
+  text-decoration: underline;
+}
+
+/* Soundboard */
+#soundboard-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.sound-btn {
+  background-color: #333;
+  border: none;
+  padding: 15px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  flex: 1 1 100px;
+  color: #eee;
+  font-weight: bold;
+  transition: background-color 0.3s;
+}
+
+.sound-btn:hover {
+  background-color: #64b5f6;
+  color: #121212;
+}
+
+/* Bauplan */
+#bauplan-form input,
+#bauplan-form textarea {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1em;
+}
+
+#bauplan-form button {
+  background-color: #1e88e5;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#plan-list {
+  list-style: none;
+  padding: 0;
+}
+
+#plan-list li {
+  background-color: #222;
+  margin-bottom: 8px;
+  padding: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+}
+
+#plan-list li:hover {
+  background-color: #64b5f6;
+  color: #121212;
+}
+
+.plan-delete {
+  position: absolute;
+  top: 5px;
+  right: 8px;
+  background-color: #c62828;
+  border: none;
+  border-radius: 3px;
+  color: white;
+  padding: 3px 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* Serverfinder */
+#server-search {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 15px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1em;
+}
+
+#server-list {
+  list-style: none;
+  padding: 0;
+}
+
+#server-list li {
+  background-color: #222;
+  margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 6px;
+  cursor: default;
+}
+
+.server-name {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.server-ip {
+  font-family: monospace;
+  margin-top: 5px;
+}
+
+.server-type {
+  font-style: italic;
+  margin-top: 5px;
+  color: #aaa;
+}
+
+@media (max-width: 600px) {
+  nav .nav-btn {
+    margin: 5px 2px;
+    padding: 8px 10px;
+    font-size: 0.9em;
+  }
+
+  #soundboard-buttons {
+    flex-direction: column;
+  }
+}

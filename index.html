@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Minecraft Toolbox</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Minecraft Toolbox</h1>
+    <nav>
+      <button data-module="news" class="nav-btn active">News & Updates</button>
+      <button data-module="soundboard" class="nav-btn">Soundboard</button>
+      <button data-module="bauplan" class="nav-btn">Bauplan-Organizer</button>
+      <button data-module="serverfinder" class="nav-btn">Server-Finder</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="news" class="module active">
+      <h2>News & Updates</h2>
+      <div id="news-list">Lade News...</div>
+    </section>
+
+    <section id="soundboard" class="module">
+      <h2>Soundboard</h2>
+      <div id="soundboard-buttons"></div>
+    </section>
+
+    <section id="bauplan" class="module">
+      <h2>Bauplan-Organizer</h2>
+      <form id="bauplan-form">
+        <input type="text" id="plan-title" placeholder="Titel" required />
+        <textarea id="plan-content" placeholder="Beschreibung, Materialien, etc." rows="6" required></textarea>
+        <button type="submit">Speichern</button>
+      </form>
+      <h3>Gespeicherte Baupläne</h3>
+      <ul id="plan-list"></ul>
+    </section>
+
+    <section id="serverfinder" class="module">
+      <h2>Multiplayer Server-Finder</h2>
+      <input type="text" id="server-search" placeholder="Server suchen..." />
+      <ul id="server-list"></ul>
+    </section>
+  </main>
+
+  <script src="main.js"></script>
+</body>
+</html>
